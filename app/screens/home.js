@@ -13,30 +13,28 @@ export class HomeScreen extends React.Component {
             queue: [],
         };
 
-        this.onReceivedMessage = this.onReceivedMessage.bind(this);
+        this.onNewQueue = this.onNewQueue.bind(this);
         this.onSend = this.onSend.bind(this);
 
         this.socket = io(IP + ':3000');
-        this.socket.on('message', this.onReceivedMessage);
+        this.socket.on('new-queue', this.onNewQueue);
     }
 
     onSend(message) {
-        this.socket.emit('message', message);
+        this.socket.emit('add-song', "New Title", "New Artist", 0);
     }
 
-    onReceivedMessage(message) {
+    onNewQueue(queue) {
         this.setState({
-            queue: this.state.queue.concat([message]),
+            queue: queue,
         });
-
-        console.log("Client received: " + message);
     }
 
     render() {
         let list_of_messages = this.state.queue.map( (data, index) => {
             return (
                 <View key={index} style={{height: 50, width: '100%', backgroundColor: 'green'}}>
-                    <Text>{index}</Text>
+                    <Text>{data['title']} / {data['artist']} / {data['votes']}</Text>
                 </View>
             )
         })
