@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 
 import io from 'socket.io-client';
 import { IP } from '../secrets.js';
+import { QueueItem } from '../components/queue_item.js';
 
 export class HomeScreen extends React.Component {
 
@@ -33,9 +34,7 @@ export class HomeScreen extends React.Component {
     render() {
         let list_of_messages = this.state.queue.map( (data, index) => {
             return (
-                <View key={index} style={{height: 50, width: '100%', backgroundColor: 'green'}}>
-                    <Text>{data['title']} / {data['artist']} / {data['votes']}</Text>
-                </View>
+                <QueueItem key={index} title={data['title']} artist={data['artist']} votes={data['votes']}/>
             )
         })
 
@@ -44,7 +43,9 @@ export class HomeScreen extends React.Component {
             <TouchableOpacity onPress={() => this.onSend("SENDING MESSAGE!!!")} style={styles.container}>
                 <Text>Hi</Text>
             </TouchableOpacity>
-            {list_of_messages}
+            <ScrollView>
+                {list_of_messages}
+            </ScrollView>
             </>
         )
     }
