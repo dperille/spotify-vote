@@ -20,6 +20,15 @@ io.on('connection', function(socket) {
     queue.addSong(title, artist, votes);
     io.emit('new-queue', queue.queue);
   });
+
+  socket.on('vote-up', function(listId){
+    console.log("Voting up id: " + listId);
+  });
+
+  socket.on('vote-down', function(listId){
+    console.log("Voting down id: " + listId);
+  });
+
 });
 
 server.listen(port, '0.0.0.0', () => {
