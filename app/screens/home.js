@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-nati
 import io from 'socket.io-client';
 import { IP } from '../secrets.js';
 import { QueueItem } from '../components/queue_item.js';
+import { AddButton } from '../components/add_button.js';
 
 export class HomeScreen extends React.Component {
 
@@ -39,24 +40,25 @@ export class HomeScreen extends React.Component {
         })
 
         return (
-            <>
-            <TouchableOpacity onPress={() => this.onSend("SENDING MESSAGE!!!")} style={styles.container}>
-                <Text>Hi</Text>
-            </TouchableOpacity>
-            <ScrollView>
-                {list_of_messages}
-            </ScrollView>
-            </>
+            <View style={styles.container}>
+                <AddButton style={styles.addButton} navigation={this.props.navigation}/>
+                <ScrollView style={styles.scrollContainer} layout_height="match_parent">
+                    {list_of_messages}
+                </ScrollView>
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        height: '25%',
-        width: '100%',
-        backgroundColor: 'blue',
+        alignItems: 'center',
+        flexDirection: 'column',
+        flex: 1,
     },
 
+    scrollContainer: {
+        width: '100%',
+    },
     
 });

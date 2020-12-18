@@ -7,4 +7,12 @@ export class AddScreen extends React.Component {
         super(props);
     }
 
+    render() {
+        return (
+            <View>
+                <Text>Add songs here</Text>
+            </View>
+        )
+    }
+
 }
