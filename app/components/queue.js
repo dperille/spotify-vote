@@ -2,8 +2,13 @@ class SongQueue {
     
     constructor(props){
         this.queue = [];
+
+        // Used to assign id's to each song in the queue
+        this.count = 0;
     }
 
+    /* Add a song to the priority queue in its appropriate spot
+       and return the list id associated with it */
     addSong(title, artist, votes) {
         var i = 0;
         while(i < this.queue.length && votes <= this.queue[i]['votes']){
@@ -14,13 +19,19 @@ class SongQueue {
             'title': title,
             'artist': artist,
             'votes': votes,
+            'id': this.count,
         };
+
+        this.count++;
 
         this.queue.splice(i, 0, song);
     }
 
-    voteUp(index) {
-        if(index >= this.queue.length || index < 0){
+    // Votes up the list element matching id, and returns its new vote count
+    voteUp(id) {
+        var index = this.getIndexFromId(id);
+
+        if(index == -1){
             // todo -- error checking
             return null;
         }
@@ -38,10 +49,15 @@ class SongQueue {
             this.queue.splice(index, 1);
             this.queue.splice(i+1, 0, song);
         }
+
+        return this.queue[index]['votes'];
     }
 
-    voteDown(index) {
-        if(index >= this.queue.length || index < 0){
+    // Votes down the list element matching id, and returns its new vote count
+    voteDown(id) {
+        var index = this.getIndexFromId(id);
+
+        if(index == -1){
             // todo -- error checking
             return null;
         }
@@ -59,6 +75,20 @@ class SongQueue {
             this.queue.splice(i, 0, song);
             this.queue.splice(index, 1);
         }
+
+        return this.queue[index]['votes'];
+    }
+
+    // Returns the index of the song with listId id, or -1 if not present
+    getIndexFromId(id) {
+        var i;
+        for(i = 0; i < this.queue.length; i++) {
+            if(this.queue[i]['id'] == id){
+                return i;
+            }
+        }
+
+        return -1;
     }
 }
 

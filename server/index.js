@@ -17,16 +17,21 @@ io.on('connection', function(socket) {
   socket.emit('new-queue', queue.queue);
 
   socket.on('add-song', function(title, artist, votes){
+    // add the song to the priority queue
     queue.addSong(title, artist, votes);
+
+    // notify all clients of the new queue
     io.emit('new-queue', queue.queue);
   });
 
   socket.on('vote-up', function(listId){
-    console.log("Voting up id: " + listId);
+    var newVoteCount = queue.voteUp(listId);
+    io.emit('vote-up', listId, newVoteCount);
   });
 
   socket.on('vote-down', function(listId){
-    console.log("Voting down id: " + listId);
+    var newVoteCount = queue.voteDown(listId);
+    io.emit('vote-down', listId, newVoteCount);
   });
 
 });

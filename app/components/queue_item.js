@@ -17,6 +17,22 @@ export class QueueItem extends React.Component {
 
         this.voteUp = this.voteUp.bind(this);
         this.voteDown = this.voteDown.bind(this);
+
+        socket.on('vote-up', (listId, voteCount) => {
+            if(listId == this.state.listId){
+                this.setState({
+                    votes: voteCount,
+                });
+            }
+        });
+
+        socket.on('vote-down', (listId, voteCount) => {
+            if(listId == this.state.listId){
+                this.setState({
+                    votes: voteCount,
+                });
+            }
+        });
     }
 
     voteUp() {
@@ -38,6 +54,7 @@ export class QueueItem extends React.Component {
                     <Text>{this.state.title}</Text>
                     <Text>{this.state.artist}</Text>
                     <Text>{this.state.votes}</Text>
+                    <Text>{this.state.listId}</Text>
                 </View>
 
                 <TouchableOpacity style={styles.downVoteButton} onPress={this.voteDown}>

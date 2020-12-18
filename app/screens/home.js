@@ -32,15 +32,15 @@ export class HomeScreen extends React.Component {
     render() {
         let list_of_messages = this.state.queue.map( (data, index) => {
             return (
-                <QueueItem key={index} listId={index} title={data['title']} artist={data['artist']} votes={data['votes']}/>
+                <QueueItem key={index} listId={data['id']} title={data['title']} artist={data['artist']} votes={data['votes']}/>
             )
         })
 
         return (
             <View style={styles.container}>
                 <AddButton style={styles.addButton} navigation={this.props.navigation}/>
+                <TouchableOpacity style={{backgroundColor: 'grey', width: '100%', height: '10%'}} onPress={this.onSend}/>
                 <ScrollView style={styles.scrollContainer}>
-                    <QueueItem title={"Sample title"} artist={"Sample artist"} votes={1} listId={0}/>
                     {list_of_messages}
                 </ScrollView>
             </View>
