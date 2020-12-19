@@ -25,13 +25,19 @@ io.on('connection', function(socket) {
   });
 
   socket.on('vote-up', function(listId){
-    var newVoteCount = queue.voteUp(listId);
-    io.emit('vote-up', listId, newVoteCount);
+    var voteCount = queue.voteUp(listId);
+
+    // Emit the new queue ordering and element's vote count
+    io.emit('new-queue', queue.queue);
+    io.emit('vote-up', listId, voteCount);
   });
 
   socket.on('vote-down', function(listId){
-    var newVoteCount = queue.voteDown(listId);
-    io.emit('vote-down', listId, newVoteCount);
+    var voteCount = queue.voteDown(listId);
+
+    // Emit the new queue ordering and element's vote count
+    io.emit('new-queue', queue.queue);
+    io.emit('vote-down', listId, voteCount);
   });
 
 });

@@ -36,7 +36,7 @@ class SongQueue {
             return null;
         }
 
-        this.queue[index]['votes'] += 1;
+        var newVoteCount = this.queue[index]['votes'] += 1;
 
         // move the song up if now greater than those in front of it
         var i = index - 1;
@@ -50,7 +50,7 @@ class SongQueue {
             this.queue.splice(i+1, 0, song);
         }
 
-        return this.queue[index]['votes'];
+        return newVoteCount;
     }
 
     // Votes down the list element matching id, and returns its new vote count
@@ -62,7 +62,7 @@ class SongQueue {
             return null;
         }
 
-        this.queue[index]['votes'] -= 1;
+        var newVoteCount = this.queue[index]['votes'] -= 1;
 
         // move the song down if now less than those behind it
         var i = index + 1;
@@ -76,7 +76,7 @@ class SongQueue {
             this.queue.splice(index, 1);
         }
 
-        return this.queue[index]['votes'];
+        return newVoteCount;
     }
 
     // Returns the index of the song with listId id, or -1 if not present

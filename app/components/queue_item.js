@@ -18,6 +18,7 @@ export class QueueItem extends React.Component {
         this.voteUp = this.voteUp.bind(this);
         this.voteDown = this.voteDown.bind(this);
 
+        // listen for vote changes to update this component directly
         socket.on('vote-up', (listId, voteCount) => {
             if(listId == this.state.listId){
                 this.setState({
