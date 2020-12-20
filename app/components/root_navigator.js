@@ -6,9 +6,9 @@ import { HomeScreen } from '../screens/home.js';
 import { AddScreen } from '../screens/add.js';
 import { ChooseHostJoinScreen } from '../screens/choose_host_join.js';
 import { RoomNumberEntryScreen } from '../screens/room_number_entry.js';
+import { SpotifyLoginScreen } from '../screens/spotify_login.js';
 
 import { AuthContext } from './auth_context.js';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();
 
@@ -22,7 +22,7 @@ export default function RootNavigator() {
     // Has not yet chosen host or join. Start there
     if(authContext['choseHostJoin'][0] == false) {
       return (
-        <Stack.Screen name="ChoseHostJoin" component={ChooseHostJoinScreen}/>
+        <Stack.Screen name="ChooseHostJoin" component={ChooseHostJoinScreen}/>
       )
     }
 
@@ -32,7 +32,25 @@ export default function RootNavigator() {
       // Chose to host
       // TODO
       if(authContext['isHost'][0] == true) {
-        return ( <Text>Hello</Text> )
+
+        // Host has not authenticated with spotify yet
+        if(authContext['spotifyAuthorized'][0] == false) {
+          // TODO - spotify auth
+          return ( 
+            <Stack.Screen name="SpotifyLogin" component={SpotifyLoginScreen}/>
+          )
+        }
+
+        // Host has already authenticated with spotify. Move
+        // to main screen
+        else {
+          return ( 
+            <>
+              <Stack.Screen name="Home" component={HomeScreen}/>
+              <Stack.Screen name="Add" component={AddScreen}/>
+            </>
+          )
+        }
       }
 
       // Chose to join room
