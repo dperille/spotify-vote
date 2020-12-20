@@ -3,7 +3,7 @@ import { spotifyCredentials } from '../secrets.js';
 
 class SpotifyAuthHandler {
 
-  constructor() {
+  constructor(props) {
     // spotify authentication parameters
     this.config = { 
       clientId: spotifyCredentials['clientId'],
@@ -28,8 +28,15 @@ class SpotifyAuthHandler {
         authUrl: this.constructGETString(),
       });
 
-      // get the authorization code from Spotify API
-      console.log(results);
+      if(results.type == 'success'){
+        // return the authorization code from Spotify API
+        console.log(results['params']['code']);
+        return results['params']['code'];
+      }
+      else {
+        // display that authentication failed
+        return null;
+      }
     } catch (error) {
       console.log(error);
     }

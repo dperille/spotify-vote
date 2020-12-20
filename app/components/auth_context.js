@@ -7,10 +7,8 @@ const AuthContextProvider = props => {
     const [isHost, setIsHost] = React.useState(false);
     const [roomNumber, setRoomNumber] = React.useState(null);
     const [inRoom, setInRoom] = React.useState(false);
-
-    // TODO - Default to true for now to move past it, but
-    // change when implementing spotify auth
     const [spotifyAuthorized, setSpotifyAuthorized] = React.useState(false);
+    const [spotifyAuthToken, setSpotifyAuthToken] = React.useState(null);
 
     return (
         <AuthContext.Provider value={{
@@ -19,6 +17,7 @@ const AuthContextProvider = props => {
             roomNumber: [roomNumber, setRoomNumber],
             inRoom: [inRoom, setInRoom],
             spotifyAuthorized: [spotifyAuthorized, setSpotifyAuthorized],
+            spotifyAuthToken: [spotifyAuthToken, setSpotifyAuthToken],
         }}>
             {props.children}
         </AuthContext.Provider>
