@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
 
 import { AuthContext } from '../components/auth_context.js';
+import { socket } from '../components/socket.js';
 
 export class RoomNumberEntryScreen extends React.Component {
 
@@ -12,6 +13,7 @@ export class RoomNumberEntryScreen extends React.Component {
 
     this.state = {
       roomEntry: '',
+      errorOnEntry: false,
     };
   }
 
@@ -19,13 +21,20 @@ export class RoomNumberEntryScreen extends React.Component {
     this.setState({ roomEntry: entry });
   }
 
+  // called when submit button pressed
   submit = () => {
-    // TODO -- check server if valid room number.
-    // for now, just let them in
-
-    // set auth variables and move to main screen
-    this.context['roomNumber'][1](this.state.roomEntry);
-    this.context['inRoom'][1](true);
+    // check if valid room number
+    socket.emit('check-room-number', this.state.roomEntry);
+    socket.on('check-room-number', (validRoom) => {
+      if(validRoom){
+        // set auth variables and move to main screen
+        this.context['roomNumber'][1](this.state.roomEntry);
+        this.context['inRoom'][1](true);
+      }
+      else {
+        this.setState({ errorOnEntry: true });
+      }
+    });
   }
 
   render() {
@@ -42,6 +51,8 @@ export class RoomNumberEntryScreen extends React.Component {
         <TouchableOpacity style={styles.button} onPress={this.submit}>
           <Text style={styles.buttonText}>Enter</Text>
         </TouchableOpacity>
+
+        {this.state.errorOnEntry && <Text>Error: invalid room number</Text>}
 
       </View>
     )

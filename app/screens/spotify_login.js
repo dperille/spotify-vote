@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AuthContext } from '../components/auth_context.js';
 
 import spotifyAuthHandler from '../components/spotify_auth_handler.js';
+import { socket } from '../components/socket.js';
 
 export class SpotifyLoginScreen extends React.Component {
 
@@ -28,6 +29,13 @@ export class SpotifyLoginScreen extends React.Component {
             this.setState({ errorOnLogin: false });
             this.context['spotifyAuthToken'][1](authCode);
             this.context['spotifyAuthorized'][1](true);
+
+            // request room number and store it
+            socket.emit('get-room');
+            socket.on('give-room', (roomId) => {
+              this.context['inRoom'][1](true);
+              this.context['roomNumber'][1](roomId);
+            });
           }
 
           // invalid auth code -- display error
@@ -39,7 +47,7 @@ export class SpotifyLoginScreen extends React.Component {
         </TouchableOpacity>
 
         {this.state.errorOnLogin && <Text>Error on login</Text>}
-        
+
       </View>
     )
   }

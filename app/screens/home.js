@@ -4,8 +4,11 @@ import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-nati
 import { socket } from '../components/socket.js';
 import { QueueItem } from '../components/queue_item.js';
 import { AddButton } from '../components/add_button.js';
+import { AuthContext } from '../components/auth_context.js';
 
 export class HomeScreen extends React.Component {
+
+    static contextType = AuthContext;
 
     constructor(props){
         super(props);
@@ -48,6 +51,9 @@ export class HomeScreen extends React.Component {
 
         return (
             <View style={styles.container}>
+                <View style={styles.roomNumberBar}>
+                    <Text>{this.context['roomNumber'][0]}</Text>
+                </View>
                 <AddButton style={styles.addButton} navigation={this.props.navigation}/>
                 <TouchableOpacity style={{backgroundColor: 'grey', width: '100%', height: '10%'}} onPress={this.onSend}/>
                 <ScrollView style={styles.scrollContainer}>
@@ -66,6 +72,15 @@ const styles = StyleSheet.create({
     },
 
     scrollContainer: {
+        width: '100%',
+    },
+
+    roomNumberBar: {
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '15%',
         width: '100%',
     },
     
