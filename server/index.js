@@ -1,4 +1,4 @@
-const Queue = require('../app/components/queue.js');
+const RoomTracker = require('./room_track.js');
 
 var app = require("express")();
 var server = require("http").createServer(app);
@@ -9,54 +9,58 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-// queue of songs
-var queue = new Queue();
-
-// list rooms
-var roomsAvailable = ['0000', '0001', '0002', '0003', '0004', '0005', '0006', '0007', '0008', '0009'];
-var roomsUsed = [];
+// tracks used and unused rooms, including tracking their song queues
+var roomTracker = new RoomTracker();
 
 io.on('connection', function(socket) {
   console.log('socket id ' + socket.id + ' connected');
 
-  // give the new client the existing queue
-  // TODO -- store queue per room
-  socket.emit('new-queue', queue.queue);
-
+  
+  // when client adds a song to the queue
   socket.on('add-song', function(title, artist, votes){
+    const roomId = socket.roomsIn[0];
+
     // add the song to the priority queue
-    queue.addSong(title, artist, votes);
+    roomTracker.addSong(roomId, title, artist, votes);
 
     // notify all clients of the new queue
-    io.to(socket.roomsIn[0]).emit('new-queue', queue.queue);
+    io.to(roomId).emit('new-queue', roomTracker.getQueueAsArr(roomId));
   });
 
+
+  // client votes up a song in the queue
   socket.on('vote-up', function(listId){
-    var voteCount = queue.voteUp(listId);
+    const roomId = socket.roomsIn[0];
+
+    var voteCount = roomTracker.voteUpSong(roomId, listId);
 
     // Emit the new queue ordering and element's vote count
-    io.to(socket.roomsIn[0]).emit('new-queue', queue.queue);
-    io.to(socket.roomsIn[0]).emit('vote-up', listId, voteCount);
+    io.to(roomId).emit('new-queue', roomTracker.getQueueAsArr(roomId));
+    io.to(roomId).emit('vote-up', listId, voteCount);
   });
 
+
+  // client votes down a song in the queue
   socket.on('vote-down', function(listId){
-    var voteCount = queue.voteDown(listId);
+    const roomId = socket.roomsIn[0];
+    
+    var voteCount = roomTracker.voteDownSong(roomId, listId);
 
     // Emit the new queue ordering and element's vote count
-    io.to(socket.roomsIn[0]).emit('new-queue', queue.queue);
-    io.to(socket.roomsIn[0]).emit('vote-down', listId, voteCount);
+    io.to(roomId).emit('new-queue', roomTracker.getQueueAsArr(roomId));
+    io.to(roomId).emit('vote-down', listId, voteCount);
   });
+
 
   // after choosing host, user requests a room
   socket.on('get-room', function(){
-    // error if no open rooms
-    if(roomsAvailable.length == 0){
+    // get empty room
+    var roomId = roomTracker.getEmptyRoom();
+
+    // no empty rooms left
+    if(roomId == null){
       socket.emit('give-room', null);
     }
-
-    // get available ID and add to taken list
-    var roomId = roomsAvailable.splice(0, 1)[0];
-    roomsUsed.push(roomId);
 
     // send room ID back to requester
     socket.join(roomId);
@@ -64,18 +68,22 @@ io.on('connection', function(socket) {
     socket.emit('give-room', roomId);
   });
 
+
   // client requesting to join room, ensure valid ID and join
-  socket.on('check-room-number', function(roomId){
+  socket.on('join-room', function(roomId){
     // valid roomId -- join
-    if(roomsUsed.includes(roomId)){
+    if(roomTracker.isValidRoomId(roomId)){
       socket.join(roomId);
       socket.roomsIn = [roomId];
-      socket.emit('check-room-number', true);
+
+      // give client the existing queue and signal success of join
+      socket.emit('join-room', true);
+      socket.emit('new-queue', roomTracker.getQueueAsArr(roomId));
     }
 
     // invalid id -- signal error
     else{
-      socket.emit('check-room-number', false);
+      socket.emit('join-room', false);
     }
   });
 

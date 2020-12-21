@@ -24,8 +24,8 @@ export class RoomNumberEntryScreen extends React.Component {
   // called when submit button pressed
   submit = () => {
     // check if valid room number
-    socket.emit('check-room-number', this.state.roomEntry);
-    socket.on('check-room-number', (validRoom) => {
+    socket.emit('join-room', this.state.roomEntry);
+    socket.on('join-room', (validRoom) => {
       if(validRoom){
         // set auth variables and move to main screen
         this.context['roomNumber'][1](this.state.roomEntry);

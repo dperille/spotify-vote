@@ -1,6 +1,6 @@
 class SongQueue {
     
-    constructor(props){
+    constructor(){
         this.queue = [];
 
         // Used to assign id's to each song in the queue
