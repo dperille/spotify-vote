@@ -8,7 +8,8 @@ const AuthContextProvider = props => {
     const [roomNumber, setRoomNumber] = React.useState(null);
     const [inRoom, setInRoom] = React.useState(false);
     const [spotifyAuthorized, setSpotifyAuthorized] = React.useState(false);
-    const [spotifyAuthToken, setSpotifyAuthToken] = React.useState(null);
+    const [spotifyAccessToken, setAccessToken] = React.useState(null);
+    const [spotifyRefreshToken, setRefreshToken] = React.useState(null);
 
     return (
         <AuthContext.Provider value={{
@@ -17,7 +18,8 @@ const AuthContextProvider = props => {
             roomNumber: [roomNumber, setRoomNumber],
             inRoom: [inRoom, setInRoom],
             spotifyAuthorized: [spotifyAuthorized, setSpotifyAuthorized],
-            spotifyAuthToken: [spotifyAuthToken, setSpotifyAuthToken],
+            spotifyAccessToken: [spotifyAccessToken, setAccessToken],
+            spotifyRefreshToken: [spotifyRefreshToken, setRefreshToken],
         }}>
             {props.children}
         </AuthContext.Provider>

@@ -21,13 +21,15 @@ export class SpotifyLoginScreen extends React.Component {
     return (
       <View style={styles.container}>
         <TouchableOpacity style={styles.button} onPress={async () => {
-          // call the spotify authorization and await the authorization token
-          let authCode = await spotifyAuthHandler.onLogin();
 
-          // valid auth code -- set context variables to move on to main functionality
-          if(authCode != null){
+          try {
+            // call the spotify authorization and await the access and refresh tokens
+            let { accessToken, refreshToken } = await spotifyAuthHandler.onLogin();
+
+            // valid auth code -- set auth context variables and move to main functionality
             this.setState({ errorOnLogin: false });
-            this.context['spotifyAuthToken'][1](authCode);
+            this.context['spotifyAccessToken'][1](accessToken);
+            this.context['spotifyRefreshToken'][1](refreshToken);
             this.context['spotifyAuthorized'][1](true);
 
             // request room number and store it
@@ -36,12 +38,12 @@ export class SpotifyLoginScreen extends React.Component {
               this.context['inRoom'][1](true);
               this.context['roomNumber'][1](roomId);
             });
-          }
-
-          // invalid auth code -- display error
-          else {
+          } 
+          catch (error) {
+            // invalid auth code -- display error
             this.setState({ errorOnLogin: true });
           }
+
         }}>
           <Text style={styles.buttonText}>Login to Spotify</Text> 
         </TouchableOpacity>
