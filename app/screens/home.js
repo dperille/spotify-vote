@@ -20,7 +20,6 @@ export class HomeScreen extends React.Component {
         this._isMounted = false;
 
         this.onNewQueue = this.onNewQueue.bind(this);
-        this.onSend = this.onSend.bind(this);
         socket.on('new-queue', this.onNewQueue);
     }
 
@@ -30,10 +29,6 @@ export class HomeScreen extends React.Component {
 
     componentWillUnmount() {
         this._isMounted = false;
-    }
-
-    onSend(message) {
-        socket.emit('add-song', "New Title", "New Artist", 0);
     }
 
     onNewQueue(newQueue) {
@@ -55,7 +50,6 @@ export class HomeScreen extends React.Component {
                     <Text>{this.context['roomNumber'][0]}</Text>
                 </View>
                 <AddButton style={styles.addButton} navigation={this.props.navigation}/>
-                <TouchableOpacity style={{backgroundColor: 'grey', width: '100%', height: '10%'}} onPress={this.onSend}/>
                 <ScrollView style={styles.scrollContainer}>
                     {list_of_components}
                 </ScrollView>

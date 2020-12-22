@@ -1,6 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { AuthContext } from '../components/auth_context';
+import { SearchResult } from '../components/search_result.js';
+import { socket } from '../components/socket.js';
 
 export class AddScreen extends React.Component {
 
@@ -11,7 +13,7 @@ export class AddScreen extends React.Component {
 
         this.state = {
             query: '',   // current search query
-            tracks: [],  // array of Objects for songs holding 'title', 'artist', 'album', and 'image'
+            tracks: [],  // array of Objects for songs holding 'title', 'artist', 'album', and 'imageUrl'
             error: false,
         };
 
@@ -21,7 +23,18 @@ export class AddScreen extends React.Component {
 
     // user changes what's in search bar
     onChangeText = (text) => {
-        this.setState({ query: text });
+        this.setState({ query: text }, () => {
+
+            if(text.length > 1){
+                // automatically load results when search bar entry changes
+                this.onSearchButton();
+            }
+            else {
+                // clear results when search entry is cleared
+                this.setState({ tracks: [], error: false })
+            }
+
+        });
     }
 
     // user presses search button
@@ -35,8 +48,8 @@ export class AddScreen extends React.Component {
                 },
             });
 
-            // API returned failure code -- display error message
             if(result['status'] != '200'){
+                // API returned failure code -- display error message
                 this.setState({ tracks: [], error: true });
                 return;
             }
@@ -53,28 +66,36 @@ export class AddScreen extends React.Component {
                     // if multiple artists, join with commas
                     artist: itemsArr[i]['artists'].map( (artist) => artist['name']).join(', '),
                     album: itemsArr[i]['album']['name'],
-                    // TODO - STORE URI
-                    // TODO - store album image
+                    uri: itemsArr[i]['uri'],
+                    imageUrl: itemsArr[i]['album']['images'][0]['url'],
                 });
             }
-
+            
             // store the info about returned tracks in state
-            this.setState({ tracks: songs });
+            this.setState({ tracks: songs, error: false });
         }
         catch(error) {
             this.setState({ tracks: [], error: true });
         }
     }
 
+    addSongToQueue(title, artist){
+        socket.emit('add-song', title, artist, 1);
+    }
+
     render() {
         // create element for each search result
         let searchResults = this.state.tracks.map( (data, index) => {
             return (
-                <View key={index} style={styles.searchResult}>
-                    <Text>{data['title']}</Text>
-                    <Text>{data['artist']}</Text>
-                    <Text>{data['album']}</Text>
-                </View>
+                <SearchResult
+                    key={data['uri']}
+                    title={data['title']}
+                    artist={data['artist']}
+                    album={data['album']}
+                    uri={data['uri']}
+                    imageUrl={data['imageUrl']}
+                    press={() => this.addSongToQueue(data['title'], data['artist'])}
+                />
             )
         });
 
@@ -87,7 +108,6 @@ export class AddScreen extends React.Component {
                         placeholderTextColor="white"
                         onChangeText={this.onChangeText}
                     />
-                    <TouchableOpacity style={styles.searchButton} onPress={this.onSearchButton}/>
                 </View>
                 { this.state.error && <Text>Error on search</Text> }
                 <ScrollView style={styles.resultsContainer}>
@@ -131,13 +151,7 @@ const styles = StyleSheet.create({
     searchBar: {
         backgroundColor: 'grey',
         height: '100%',
-        width: '80%',
-    },
-
-    searchButton: {
-        backgroundColor: 'green',
-        height: '100%',
-        flex: 1,
+        width: '100%',
     },
 
     resultsContainer: {
