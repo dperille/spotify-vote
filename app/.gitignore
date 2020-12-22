@@ -9,5 +9,10 @@ npm-debug.*
 *.orig.*
 web-build/
 
+# app socket and secrets
+debug.log
+secrets.js
+components/socket.js
+
 # macOS
 .DS_Store
