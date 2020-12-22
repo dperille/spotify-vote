@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
 import { socket } from './socket.js';
 
@@ -11,6 +11,9 @@ export class QueueItem extends React.Component {
         this.state = {
             title: props.title,
             artist: props.artist,
+            album: props.album,
+            imageUrl: props.imageUrl,
+            uri: props.uri,
             votes: props.votes,
             listId: props.listId,
         };
@@ -51,11 +54,13 @@ export class QueueItem extends React.Component {
 
                 </TouchableOpacity>
 
+                <Image source={{ uri: this.state.imageUrl }} style={styles.image}/>
+
                 <View style={styles.songInfo}>
-                    <Text>{this.state.title}</Text>
-                    <Text>{this.state.artist}</Text>
-                    <Text>{this.state.votes}</Text>
-                    <Text>{this.state.listId}</Text>
+                    <Text numberOfLines={1}>{this.state.title}</Text>
+                    <Text numberOfLines={1}>{this.state.artist}</Text>
+                    <Text numberOfLines={1}>{this.state.votes}</Text>
+                    <Text numberOfLines={1}>{this.state.uri}</Text>
                 </View>
 
                 <TouchableOpacity style={styles.downVoteButton} onPress={this.voteDown}>
@@ -92,5 +97,10 @@ const styles = StyleSheet.create({
         width: '10%',
         backgroundColor: 'red',
         height: '100%',
+    },
+
+    image: {
+        width: 25,
+        height: 25,
     }
 });

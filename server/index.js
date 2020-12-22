@@ -18,11 +18,12 @@ io.on('connection', function(socket) {
 
   
   // when client adds a song to the queue
-  socket.on('add-song', function(title, artist, votes){
+  socket.on('add-song', function(song){
     const roomId = socket.roomsIn[0];
 
     // add the song to the priority queue
-    roomTracker.addSong(roomId, title, artist, votes);
+    const votes = 1;
+    roomTracker.addSong(roomId, song, votes);
 
     // notify all clients of the new queue
     io.to(roomId).emit('new-queue', roomTracker.getQueueAsArr(roomId));

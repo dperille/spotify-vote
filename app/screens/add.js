@@ -47,7 +47,6 @@ export class AddScreen extends React.Component {
         try {
             // invalid access token, we need to set it before searching
             if(this.context['spotifyAccessToken'][0] == null){
-                console.log("HELLO???")
                 socket.emit('get-access-token', (token) => {
                     this.context['spotifyAccessToken'][1](token);
                 });
@@ -92,8 +91,16 @@ export class AddScreen extends React.Component {
         }
     }
 
-    addSongToQueue(title, artist){
-        socket.emit('add-song', title, artist, 1);
+    addSongToQueue(title, artist, album, imageUrl, uri){
+        const song = {
+            'title': title,
+            'artist': artist,
+            'album': album,
+            'imageUrl': imageUrl,
+            'uri': uri,
+        };
+
+        socket.emit('add-song', song);
     }
 
     render() {
@@ -107,7 +114,7 @@ export class AddScreen extends React.Component {
                     album={data['album']}
                     uri={data['uri']}
                     imageUrl={data['imageUrl']}
-                    press={() => this.addSongToQueue(data['title'], data['artist'])}
+                    press={() => this.addSongToQueue(data['title'], data['artist'], data['album'], data['imageUrl'], data['uri'])}
                 />
             )
         });
@@ -120,6 +127,7 @@ export class AddScreen extends React.Component {
                         placeholder="Search Spotify"
                         placeholderTextColor="white"
                         onChangeText={this.onChangeText}
+                        autoCorrect={false}
                     />
                 </View>
                 { this.state.error && <Text>Error on search</Text> }

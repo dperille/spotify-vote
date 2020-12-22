@@ -1,6 +1,8 @@
 class SongQueue {
     
     constructor(){
+        // stores song objects, each with keys 'title', 'artist',
+        // 'album', 'imageUrl', 'votes', and 'id'
         this.queue = [];
 
         // Used to assign id's to each song in the queue
@@ -9,15 +11,18 @@ class SongQueue {
 
     /* Add a song to the priority queue in its appropriate spot
        and return the list id associated with it */
-    addSong(title, artist, votes) {
+    addSong(song, votes) {
         var i = 0;
         while(i < this.queue.length && votes <= this.queue[i]['votes']){
             i++;
         }
 
         var song = {
-            'title': title,
-            'artist': artist,
+            'title': song['title'],
+            'artist': song['artist'],
+            'album': song['album'],
+            'imageUrl': song['imageUrl'],
+            'uri': song['uri'],
             'votes': votes,
             'id': this.count,
         };

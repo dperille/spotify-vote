@@ -39,8 +39,9 @@ export class HomeScreen extends React.Component {
 
     render() {
         let list_of_components = this.state.queue.map( (data) => {
+            console.log(data);
             return (
-                <QueueItem key={data['id']} listId={data['id']} title={data['title']} artist={data['artist']} votes={data['votes']}/>
+                <QueueItem key={data['id']} listId={data['id']} title={data['title']} artist={data['artist']} album={data['album']} imageUrl={data['imageUrl']} uri={data['uri']} votes={data['votes']}/>
             )
         });
 

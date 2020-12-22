@@ -34,12 +34,12 @@ class RoomTracker {
   }
 
   // adds a song to the queue of room specified by roomId
-  addSong(roomId, title, artist, votes){
+  addSong(roomId, song, votes){
     if(!this.isValidRoomId(roomId)){
       return null;
     }
 
-    this.roomsUsed[roomId]['queue'].addSong(title, artist, votes);
+    this.roomsUsed[roomId]['queue'].addSong(song, votes);
   }
 
   // votes up song corresponding to listId in room specified by roomId
