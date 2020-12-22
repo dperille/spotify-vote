@@ -15,7 +15,10 @@ class RoomTracker {
 
     // get first ID in list and add to occupied rooms
     var roomId = this.roomsAvailable.splice(0, 1)[0];
-    this.roomsUsed[roomId] = new Queue();
+    this.roomsUsed[roomId] = {
+      queue: new Queue(),
+      accessToken: '',
+    };
 
     return roomId;
   }
@@ -23,7 +26,7 @@ class RoomTracker {
   // closes the room specified by id
   // returns true on success, false on failure
   closeRoom(id) {
-    if(!this.isValidRoomId){
+    if(!this.isValidRoomId(roomId)){
       return false;
     }
 
@@ -32,40 +35,58 @@ class RoomTracker {
 
   // adds a song to the queue of room specified by roomId
   addSong(roomId, title, artist, votes){
-    if(!this.isValidRoomId){
+    if(!this.isValidRoomId(roomId)){
       return null;
     }
 
-    this.roomsUsed[roomId].addSong(title, artist, votes);
+    this.roomsUsed[roomId]['queue'].addSong(title, artist, votes);
   }
 
   // votes up song corresponding to listId in room specified by roomId
   // returns the new vote count of the song
   voteUpSong(roomId, listId){
-    if(!this.isValidRoomId){
+    if(!this.isValidRoomId(roomId)){
       return null;
     }
 
-    return this.roomsUsed[roomId].voteUp(listId);
+    return this.roomsUsed[roomId]['queue'].voteUp(listId);
   }
 
   // votes down song corresponding to listId in room specified by roomId
   // returns the new vote count of the song
   voteDownSong(roomId, listId){
-    if(!this.isValidRoomId){
+    if(!this.isValidRoomId(roomId)){
       return null;
     }
 
-    return this.roomsUsed[roomId].voteDown(listId);
+    return this.roomsUsed[roomId]['queue'].voteDown(listId);
+  }
+
+  // set the spotify access token for the room
+  setAccessToken(roomId, token){
+    if(!this.isValidRoomId(roomId)){
+      return null;
+    }
+
+    this.roomsUsed[roomId]['accessToken'] = token;
+  }
+
+  // get the room's spotify access token
+  getAccessToken(roomId){
+    if(!this.isValidRoomId(roomId)){
+      return null;
+    }
+
+    return this.roomsUsed[roomId]['accessToken'];
   }
 
   // returns the queue array of the room specified by roomId
   getQueueAsArr(roomId){
-    if(!this.isValidRoomId){
+    if(!this.isValidRoomId(roomId)){
       return null;
     }
 
-    return this.roomsUsed[roomId].queue;
+    return this.roomsUsed[roomId]['queue'].queue;
   }
 
   // returns true if roomId matches a room currently running,

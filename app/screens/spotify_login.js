@@ -37,6 +37,9 @@ export class SpotifyLoginScreen extends React.Component {
             socket.on('give-room', (roomId) => {
               this.context['inRoom'][1](true);
               this.context['roomNumber'][1](roomId);
+
+              // store the access token so all clients in the room can use it
+              socket.emit('set-access-token', accessToken);
             });
           } 
           catch (error) {

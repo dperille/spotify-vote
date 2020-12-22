@@ -19,6 +19,11 @@ export class AddScreen extends React.Component {
 
         this.onSearchButton = this.onSearchButton.bind(this);
         this.constructSearchGETString = this.constructSearchGETString.bind(this);
+
+        // listen for access token changes
+        socket.on('give-access-token', (token) => {
+            this.context['spotifyAccessToken'][1](token);
+        });
     }
 
     // user changes what's in search bar
@@ -40,6 +45,14 @@ export class AddScreen extends React.Component {
     // user presses search button
     async onSearchButton(){
         try {
+            // invalid access token, we need to set it before searching
+            if(this.context['spotifyAccessToken'][0] == null){
+                console.log("HELLO???")
+                socket.emit('get-access-token', (token) => {
+                    this.context['spotifyAccessToken'][1](token);
+                });
+            }
+            
             // query the spotify API for tracks matching what the user put in the search bar
             let result = await fetch(this.constructSearchGETString(this.state.query), {
                 method: 'GET',

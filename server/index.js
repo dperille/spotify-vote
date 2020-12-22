@@ -10,6 +10,7 @@ app.get('/', (req, res) => {
 });
 
 // tracks used and unused rooms, including tracking their song queues
+// and Spotify API access tokens
 var roomTracker = new RoomTracker();
 
 io.on('connection', function(socket) {
@@ -86,6 +87,24 @@ io.on('connection', function(socket) {
       socket.emit('join-room', false);
     }
   });
+
+
+  // setting spotify access token (either from initial host or refresh)
+  socket.on('set-access-token', function(token){
+    const roomId = socket.roomsIn[0];
+    roomTracker.setAccessToken(roomId, token);
+
+    // notify all sockets of the new token
+    io.to(roomId).emit('give-access-token', token);
+  });
+
+
+  // client requesting the spotify access token
+  socket.on('get-access-token', function(){
+    const roomId = socket.roomsIn[0];
+    const token = roomTracker.getAccessToken(roomId);
+    socket.emit('give-access-token', token);
+  })
 
 });
 
