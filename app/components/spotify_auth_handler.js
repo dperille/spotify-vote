@@ -12,7 +12,9 @@ class SpotifyAuthHandler {
       response_type: 'code',
       redirect_uri: 'https://auth.expo.io/@dperille/app',
       scopes: [
-        'playlist-read-private',
+        'user-read-playback-state',     // read access to user's playback state
+        'user-modify-playback-state',   // write access to a user's playback state
+        'user-read-currently-playing',  // read access to a user's currently playing content
       ],
       endpoints: {
         authorization: 'https://accounts.spotify.com/authorize',
@@ -36,7 +38,6 @@ class SpotifyAuthHandler {
       if(authResults.type != 'success'){
         return null;
       }
-
 
       /* 2. Use authorization code to request access and
             refresh tokens. */
