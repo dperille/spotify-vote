@@ -57,7 +57,7 @@ export class QueueItem extends React.Component {
                 </View>
 
                 <View style={styles.songInfoContainer}>
-                    <Text style={styles.songTitle} numberOfLines={1}>{this.state.title}</Text>
+                    <Text style={styles.songTitle} numberOfLines={2}>{this.state.title}</Text>
                     <Text style={styles.songArtist} numberOfLines={1}>{this.state.artist}</Text>
                 </View>
 

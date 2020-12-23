@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-nativ
 
 import { AuthContext } from '../components/auth_context.js';
 import { socket } from '../components/socket.js';
+import globalStyles from '../styles/global_styles.js';
 
 export class RoomNumberEntryScreen extends React.Component {
 
@@ -44,12 +45,12 @@ export class RoomNumberEntryScreen extends React.Component {
         <TextInput
           style={styles.textInput}
           placeholder="Enter room number"
-          placeholderTextColor="white"
+          placeholderTextColor={globalStyles.colors.primary}
           onChangeText={this.onChangeText}
         />
 
         <TouchableOpacity style={styles.button} onPress={this.submit}>
-          <Text style={styles.buttonText}>Enter</Text>
+          <Text style={styles.buttonText}>Join</Text>
         </TouchableOpacity>
 
         {this.state.errorOnEntry && <Text>Error: invalid room number</Text>}
@@ -62,25 +63,37 @@ export class RoomNumberEntryScreen extends React.Component {
 const styles = StyleSheet.create({
 
   container: {
-    backgroundColor: 'white',
+    backgroundColor: globalStyles.colors.primary,
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   textInput: {
-    width: '100%',
-    height: '20%',
-    backgroundColor: 'grey',
+    width: '90%',
+    height: '15%',
+    backgroundColor: globalStyles.colors.secondary,
+    fontFamily: globalStyles.font.normal,
+    fontSize: 25,
+    alignItems: 'center',
+    textAlign: 'center',
+    borderRadius: 5,
   },
 
   button: {
-    width: '100%',
-    height: '20%',
-    backgroundColor: 'green',
+    width: '90%',
+    height: '10%',
+    backgroundColor: globalStyles.colors.tertiary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
+    marginTop: '10%',
   },
 
   buttonText: {
-
+    fontFamily: globalStyles.font.bold,
+    color: globalStyles.colors.secondary,
+    fontSize: 25,
   },
 
 });

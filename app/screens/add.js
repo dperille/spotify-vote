@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Image 
 import { AuthContext } from '../components/auth_context';
 import { SearchResult } from '../components/search_result.js';
 import { socket } from '../components/socket.js';
+import globalStyles from '../styles/global_styles';
 
 export class AddScreen extends React.Component {
 
@@ -125,7 +126,7 @@ export class AddScreen extends React.Component {
                     <TextInput
                         style={styles.searchBar}
                         placeholder="Search Spotify"
-                        placeholderTextColor="white"
+                        placeholderTextColor={globalStyles.colors.primary}
                         onChangeText={this.onChangeText}
                         autoCorrect={false}
                     />
@@ -160,30 +161,32 @@ export class AddScreen extends React.Component {
 const styles = StyleSheet.create({
 
     container: {
+        alignItems: 'center',
         flex: 1,
+        backgroundColor: globalStyles.colors.primary,
     },
 
     searchContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
         width: '100%',
-        height: '15%',
-        flexDirection: 'row',
+        height: '23%',
     },
 
     searchBar: {
-        backgroundColor: 'grey',
-        height: '100%',
-        width: '100%',
+        backgroundColor: globalStyles.colors.secondary,
+        height: '50%',
+        width: '90%',
+        borderRadius: 5,
+        fontFamily: globalStyles.font.bold,
+        textAlign: 'center',
+        fontSize: 25,
     },
 
     resultsContainer: {
-        backgroundColor: 'black',
-    },
-
-    searchResult: {
         width: '100%',
-        marginBottom: 10,
-        height: 100,
-        backgroundColor: 'white',
+        backgroundColor: globalStyles.colors.tertiary,
+        padding: '3%',
     },
 
 });
