@@ -76,7 +76,11 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}
+      >
           {getNavFlow()}
       </Stack.Navigator>
     </NavigationContainer>

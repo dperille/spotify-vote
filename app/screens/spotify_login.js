@@ -4,6 +4,7 @@ import { AuthContext } from '../components/auth_context.js';
 
 import spotifyAuthHandler from '../components/spotify_auth_handler.js';
 import { socket } from '../components/socket.js';
+import globalStyles from '../styles/global_styles.js';
 
 export class SpotifyLoginScreen extends React.Component {
 
@@ -48,7 +49,7 @@ export class SpotifyLoginScreen extends React.Component {
           }
 
         }}>
-          <Text style={styles.buttonText}>Login to Spotify</Text> 
+          <Text style={styles.buttonText}>Log in to Spotify</Text> 
         </TouchableOpacity>
 
         {this.state.errorOnLogin && <Text>Error on login</Text>}
@@ -60,17 +61,25 @@ export class SpotifyLoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    flex: 1,
+    backgroundColor: globalStyles.colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   button: {
-    width: '100%',
-    height: '20%',
-    backgroundColor: 'green',
+    width: '80%',
+    height: '10%',
+    borderRadius: 50,
+    backgroundColor: globalStyles.colors.green,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   buttonText: {
     color: 'white',
+    fontFamily: globalStyles.font.bold,
+    fontSize: 28,
   }
 
 });

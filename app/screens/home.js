@@ -5,6 +5,7 @@ import { socket } from '../components/socket.js';
 import { QueueItem } from '../components/queue_item.js';
 import { AddButton } from '../components/add_button.js';
 import { AuthContext } from '../components/auth_context.js';
+import globalStyles from '../styles/global_styles.js';
 
 export class HomeScreen extends React.Component {
 
@@ -48,7 +49,7 @@ export class HomeScreen extends React.Component {
         return (
             <View style={styles.container}>
                 <View style={styles.roomNumberBar}>
-                    <Text>{this.context['roomNumber'][0]}</Text>
+                    <Text style={styles.roomNumberText}>Room {this.context['roomNumber'][0]}</Text>
                 </View>
                 <AddButton style={styles.addButton} navigation={this.props.navigation}/>
                 <ScrollView style={styles.scrollContainer}>
@@ -64,19 +65,28 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'column',
         flex: 1,
+        backgroundColor: globalStyles.colors.primary,
     },
 
     scrollContainer: {
+        flex: 1,
         width: '100%',
+        padding: '3%',
+        backgroundColor: globalStyles.colors.tertiary,
     },
 
     roomNumberBar: {
-        backgroundColor: 'white',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '15%',
         width: '100%',
+        paddingTop: '6%',
     },
-    
+
+    roomNumberText: {
+        fontFamily: globalStyles.font.bold,  
+        fontSize: 25,
+        color: globalStyles.colors.secondary,
+    },
+
 });

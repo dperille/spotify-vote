@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import globalStyles from '../styles/global_styles.js';
 
 import { socket } from './socket.js';
 
@@ -50,22 +51,27 @@ export class QueueItem extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={styles.upVoteButton} onPress={this.voteUp}>
 
-                </TouchableOpacity>
-
-                <Image source={{ uri: this.state.imageUrl }} style={styles.image}/>
-
-                <View style={styles.songInfo}>
-                    <Text numberOfLines={1}>{this.state.title}</Text>
-                    <Text numberOfLines={1}>{this.state.artist}</Text>
-                    <Text numberOfLines={1}>{this.state.votes}</Text>
-                    <Text numberOfLines={1}>{this.state.uri}</Text>
+                <View style={styles.imageContainer}>
+                    <Image source={{ uri: this.state.imageUrl }} style={styles.image}/>
                 </View>
 
-                <TouchableOpacity style={styles.downVoteButton} onPress={this.voteDown}>
+                <View style={styles.songInfoContainer}>
+                    <Text style={styles.songTitle} numberOfLines={1}>{this.state.title}</Text>
+                    <Text style={styles.songArtist} numberOfLines={1}>{this.state.artist}</Text>
+                </View>
 
-                </TouchableOpacity>
+                <View style={styles.voteContainer}>
+                    <TouchableOpacity style={styles.voteButtonContainer} onPress={this.voteUp}>
+                        <Image source={require('../assets/arrow_up.png')} style={styles.voteButtonImage}/>
+                    </TouchableOpacity>
+                    <Text style={styles.voteCount}>
+                        {this.state.votes > 0 ? "+" + this.state.votes : this.state.votes}
+                    </Text>
+                    <TouchableOpacity style={styles.voteButtonContainer} onPress={this.voteDown}>
+                        <Image source={require('../assets/arrow_down.png')} style={styles.voteButtonImage}/>
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     }
@@ -74,33 +80,63 @@ export class QueueItem extends React.Component {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        backgroundColor: 'white',
-        height: 70,
-        marginVertical: 5,
+        aspectRatio: 4,
+        backgroundColor: globalStyles.colors.secondary,
+        marginBottom: '2%',
         flexDirection: 'row',
+        borderRadius: 3,
     },
 
-    songInfo: {
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
+    songInfoContainer: {
         flex: 1,
+        paddingLeft: '2%',
+        paddingTop: '1%',
+        justifyContent: 'center',
     },
 
-    upVoteButton: {
-        width: '10%',
-        height: '100%',
-        backgroundColor: 'green',
+    songTitle: {
+        fontFamily: globalStyles.font.bold,
+        color: globalStyles.colors.primary,
+        fontSize: 15,
     },
 
-    downVoteButton: {
-        width: '10%',
-        backgroundColor: 'red',
-        height: '100%',
+    songArtist: {
+        fontFamily: globalStyles.font.normal,
+        color: globalStyles.colors.primary,
+    },
+
+    voteContainer: {
+        width: '15%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    voteButtonContainer: {
+        width: '100%',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    voteButtonImage: {
+        width: '80%',
+        height: '80%',
+        tintColor: globalStyles.colors.primary,
+    },
+
+    voteCount: {
+        fontFamily: globalStyles.font.bold,
+        color: globalStyles.colors.primary,
+    },
+
+    imageContainer: {
+        width: '17%',
+        justifyContent: 'center',
+        marginLeft: '3%',
     },
 
     image: {
-        width: 25,
-        height: 25,
+        aspectRatio: 1,
     }
 });
