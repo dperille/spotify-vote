@@ -26,8 +26,11 @@ export class HomeScreen extends React.Component {
         this.getCurrTrackUri = this.getCurrTrackUri.bind(this);
         this.pollSongChange = this.pollSongChange.bind(this);
         
-        // set up listening for new queue
+        // set up listening for new queue and new access token
         socket.on('new-queue', this.onNewQueue);
+        socket.on('give-access-token', (token) => {
+            this.context['spotifyAccessToken'][1](token);
+        });
 
         // start polling for song changes if host
         if(this.context['isHost'][0]){

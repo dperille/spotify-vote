@@ -1,6 +1,6 @@
 import * as AuthSession from 'expo-auth-session';
-import { acc } from 'react-native-reanimated';
 import { spotifyCredentials } from '../secrets.js';
+import { socket } from './socket.js';
 
 class SpotifyAuthHandler {
 
@@ -51,6 +51,11 @@ class SpotifyAuthHandler {
         }
       }, { tokenEndpoint: this.config['endpoints']['token'] });
 
+      // refresh the access token in ~6 minutes
+      setTimeout(() => {
+        this.refreshLogin(accessResults['refreshToken']);
+      }, 350000);
+      
       return {
         accessToken: accessResults['accessToken'],
         refreshToken: accessResults['refreshToken'],
@@ -81,6 +86,7 @@ class SpotifyAuthHandler {
 
   // refreshes the access token using the provided refresh token
   async refreshLogin(refreshToken) {
+    // pass refresh token and receive a new access token
     const result = await AuthSession.refreshAsync({
       clientId: this.config['clientId'],
       clientSecret: this.config['clientSecret'],
@@ -91,7 +97,13 @@ class SpotifyAuthHandler {
       },
     }, { tokenEndpoint: this.config['endpoints']['token'] });
 
-    return result['access_token'];
+    // refresh again in ~6 minutes
+    setTimeout(() => {
+      this.refreshLogin(refreshToken);
+    }, 350000);
+
+    // notify whole room of new access token
+    socket.emit('set-access-token', result['accessToken']);
   }
 }
 
