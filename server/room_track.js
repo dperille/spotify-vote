@@ -42,6 +42,21 @@ class RoomTracker {
     this.roomsUsed[roomId]['queue'].addSong(song, votes);
   }
 
+  // removes and returns the URI of the front song in the queue, or null if empty
+  popFrontSong(roomId){
+    if(!this.isValidRoomId(roomId)){
+      return null;
+    }
+
+    const frontSong = this.roomsUsed[roomId]['queue'].popFrontSong();
+    if(frontSong != null){
+      return frontSong['uri'];
+    }
+    else{
+      return null;
+    }
+  }
+
   // votes up song corresponding to listId in room specified by roomId
   // returns the new vote count of the song
   voteUpSong(roomId, listId){

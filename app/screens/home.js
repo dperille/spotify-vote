@@ -11,17 +11,28 @@ export class HomeScreen extends React.Component {
 
     static contextType = AuthContext;
 
-    constructor(props){
-        super(props);
+    constructor(props, context){
+        super(props, context);
 
         this.state = {
+            currTrackUri: 'none',
             queue: [],
         };
 
         this._isMounted = false;
 
+        // bind functions for access within other functions
         this.onNewQueue = this.onNewQueue.bind(this);
+        this.getCurrTrackUri = this.getCurrTrackUri.bind(this);
+        this.pollSongChange = this.pollSongChange.bind(this);
+        
+        // set up listening for new queue
         socket.on('new-queue', this.onNewQueue);
+
+        // start polling for song changes if host
+        if(this.context['isHost'][0]){
+            this.pollSongChange();
+        }
     }
 
     componentDidMount() {
@@ -37,6 +48,70 @@ export class HomeScreen extends React.Component {
         this._isMounted && this.setState({
             queue: newQueue,
         });
+    }
+
+    /* Polls the Spotify API every 3 seconds to check if the currently
+       playing song has changed. Plays the next track in the queue if 
+       track has changed. 
+       (Polling is unfortunately necessary, as
+       the Spotify Web API provides no way of notifying song change.) */
+    async pollSongChange() {
+        const currTrackUri = await this.getCurrTrackUri();
+
+        // TODO - check if first one
+        if(currTrackUri != this.state.currTrackUri) {
+            // currently playing song has changed since last time we checked
+            // play the next song in the queue
+            this.setState({ currTrackUri: currTrackUri });
+            this.playNextSong();
+        }
+
+        // poll again in 3 seconds
+        setTimeout(this.pollSongChange, 3000);
+    }
+
+    playNextSong() {
+        // If queue has songs, remove the top one and play it.
+        if(this.state.queue.length > 0) {
+            // Get the top song from the server and play it
+            socket.emit('get-and-remove-top-song');
+            socket.on('get-top-song', (uri) => {
+                // Play song through API
+                fetch('https://api.spotify.com/v1/me/player/play', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + this.context['spotifyAccessToken'][0],
+                    },
+                    body: JSON.stringify({
+                        uris: [uri],
+                    }),
+                })
+                .then(this.setState({ currTrackUri: uri }));
+                /* TODO - error checking (403)
+                .then(res => res.json())
+                .then(result => console.log(result));*/
+            });
+        }
+    }
+
+    // Gets the URI of the user's currently playing track
+    async getCurrTrackUri() {
+        try {
+            const result = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + this.context['spotifyAccessToken'][0],
+                },
+            });
+
+            const res = await result.json();
+            
+            return res['item']['uri'];
+        }
+        catch(error){
+            // TODO - check return code 204, no song currently playing
+            return "none";
+        }
     }
 
     render() {

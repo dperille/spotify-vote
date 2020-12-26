@@ -105,7 +105,21 @@ io.on('connection', function(socket) {
     const roomId = socket.roomsIn[0];
     const token = roomTracker.getAccessToken(roomId);
     socket.emit('give-access-token', token);
-  })
+  });
+
+
+  // Removes the top song from the queue and returns its URI to the host
+  socket.on('get-and-remove-top-song', function(){
+    const roomId = socket.roomsIn[0];
+    let uri = roomTracker.popFrontSong(roomId);
+
+    if(uri == null){
+      uri = 'none';
+    }
+
+    socket.emit('get-top-song', uri);
+    io.to(roomId).emit('new-queue', roomTracker.getQueueAsArr(roomId));
+  });
 
 });
 

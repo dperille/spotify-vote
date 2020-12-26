@@ -32,6 +32,15 @@ class SongQueue {
         this.queue.splice(i, 0, song);
     }
 
+    // Removes and returns the front song in the queue, or null if empty
+    popFrontSong() {
+        if(this.queue.length == 0){
+            return null;
+        }
+
+        return this.queue.splice(0, 1)[0];
+    }
+
     // Votes up the list element matching id, and returns its new vote count
     voteUp(id) {
         var index = this.getIndexFromId(id);

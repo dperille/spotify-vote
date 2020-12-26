@@ -43,7 +43,7 @@ export class AddScreen extends React.Component {
         });
     }
 
-    // user presses search button
+    // search spotify and update results
     async onSearchButton(){
         try {
             // invalid access token, we need to set it before searching
