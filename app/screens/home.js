@@ -16,6 +16,7 @@ export class HomeScreen extends React.Component {
 
         this.state = {
             currTrackUri: 'none',
+            newSong: false,
             queue: [],
         };
 
@@ -62,12 +63,19 @@ export class HomeScreen extends React.Component {
        the Spotify Web API provides no way of notifying song change.) */
     async pollSongChange() {
         const [ currTrackUri, currProgressMs ] = await this.getCurrTrackUri();
+        console.log("Heard curr track as: " + currTrackUri);
 
         // If the track has changed, or we're in the same song but back at the
         // start (track skipped or finished with no song next in queue), then
         // play the next song
-        if(currTrackUri != this.state.currTrackUri || currProgressMs < 2900) {
+        if(currTrackUri != this.state.currTrackUri) {
             this.playNextSong();
+        }
+        else if(!this.state.newSong && currProgressMs < 2) {
+            this.playNextSong()
+        }
+        else if(this.state.newSong) {
+            this.setState({ newSong: false });
         }
 
         // poll again in 3 seconds
@@ -90,7 +98,7 @@ export class HomeScreen extends React.Component {
                         uris: [uri],
                     }),
                 })
-                .then(this.setState({ currTrackUri: uri }));
+                .then(this.setState({ newSong: true, currTrackUri: uri }));
                 /* TODO - error checking (403)
                 .then(res => res.json())
                 .then(result => console.log(result));*/
